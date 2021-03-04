@@ -11,20 +11,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import logging
 import glob
-import shutil
 
 #model=load_model("")
 
 logger = tf.get_logger()
 logger.setLevel(logging.ERROR)
-tf.debugging.set_log_device_placement(True)
-gpus = tf.config.experimental.list_physical_devices('GPU')
-if gpus:
-  try:
-    tf.config.experimental.set_memory_growth(gpus[0], True)
-  except RuntimeError as e:
-    # 프로그램 시작시에 메모리 증가가 설정되어야만 합니다
-    print(e)
+
 def normalize(images, labels):
     images=tf.cast(images, tf.float32)
     images/=256
@@ -51,15 +43,13 @@ for cl in classs :
     num_train = int(round(len(images))*0.8)
     train, val = images[:round(len(images)*0.8)], images[round(len(images)*0.2):]
 
-    for t in train :
+    for i in train :
         if not os.path.exists(os.path.join(base_dir, 'train', cl)):
             os.makedirs(os.path.join(base_dir, 'train', cl))
-        #shutil.move(t, os.path.join(base_dir, 'train', cl))
 
-    for v in val:
+    for i in val:
         if not os.path.exists(os.path.join(base_dir, 'val', cl)):
             os.makedirs(os.path.join(base_dir, 'val', cl))
-        #shutil.move(v, os.path.join(base_dir, 'val', cl))
 
 train_dir = os.path.join(base_dir, 'train')
 val_dir = os.path.join(base_dir, 'val')
@@ -67,24 +57,23 @@ val_dir = os.path.join(base_dir, 'val')
 BATCH_SIZE=100
 IMG_SHAPE=150
 
-image_gen = ImageDataGenerator(rescale=1./255, horizontal_flip=True)
+image_gen = ImageDataGenerator(rescale=1./255, horizontal_flip=1)
 
 train_data_gen = image_gen.flow_from_directory(batch_size=BATCH_SIZE,
                                                            directory=train_dir,
-                                                           shuffle=True,
+                                                           shuffle=1,
                                                            target_size=(IMG_SHAPE,IMG_SHAPE))
-#augmented_image = [train_data_gen[0][0][0] for i in range(5)]
 
 image_gen = ImageDataGenerator(rescale=1./255, rotation_range=45)
 train_data_gen = image_gen.flow_from_directory(batch_size=BATCH_SIZE,
                                                               directory=train_dir,
-                                                              shuffle=True,
+                                                              shuffle=1,
                                                               target_size=(IMG_SHAPE,IMG_SHAPE),)
 
 image_gen = ImageDataGenerator(rescale=1./255, zoom_range=45)
 train_data_gen = image_gen.flow_from_directory(batch_size=BATCH_SIZE,
                                                               directory=train_dir,
-                                                              shuffle=True,
+                                                              shuffle=1,
                                                               target_size=(IMG_SHAPE,IMG_SHAPE),)
 
 #sample_training_images, _ = next(train_data_gen)
@@ -102,7 +91,7 @@ image_gen_train = ImageDataGenerator(
 
 train_data_gen = image_gen_train.flow_from_directory(batch_size=BATCH_SIZE,
                                                      directory=train_dir,
-                                                     shuffle=True,
+                                                     shuffle=1,
                                                      target_size=(IMG_SHAPE,IMG_SHAPE),
                                                      class_mode='binary')
 
