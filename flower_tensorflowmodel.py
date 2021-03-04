@@ -1,3 +1,9 @@
+"""
+
+    code for classification of flower types that have been configured in the udacity lecture
+                                                                                  
+                                                                                             """
+
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
